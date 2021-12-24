@@ -1,0 +1,4 @@
+# Scouting Website
+## Use
+Run `python3 webserver.py`
+Connect to host on port 8080
