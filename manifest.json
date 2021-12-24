@@ -1,0 +1,9 @@
+{
+  "name": "Scouting",
+  "short_name": "Scouting",
+  "start_url": "view.html",
+  "display": "standalone",
+  "background_color": "#fdfdfd",
+  "theme_color": "#db4938",
+  "orientation": "portrait-primary",
+}
