@@ -10,8 +10,8 @@
 	</head>
 	<body>
 		<div>
-			<button onclick="getTeamList()">Teams</button>
-			<ul id="teamList"></ul>
+			<select id="teamSelect"></select>
+			<button onclick="getTeamList()">Refresh Team List</button><br><br>
 
 			<form action="#" method="get" id="viewForm">
 				<label for="teamFilter">Team</label>
@@ -28,19 +28,19 @@
 			<br>
 			<hr>
 			<div id="dataView">
-				<div id="averages">
-				</div>
-				<span id="teamOut"></span><br>
-				<span id="avgCycles"></span>
+				<b><span id="teamOut"></span><br></b>
+				<span id="avgCycles" hidden></span>
+				<div id="averages"></div>
+				<hr>
 				<table id="recordList">
 					<thead>
 						<tr>
-							<th>Time</td>
-							<th>Team</td>
-							<th>Cycles</td>
-							<th>Dropped</td>
-							<th>Climbed</td>
-							<th>Notes</td>
+							<th><button id="timeSortBtn" class="sort-btn">Time</button></td>
+							<th><button id="teamSortBtn" class="sort-btn">Team</button></td>
+							<th><button id="cyclesSortBtn" class="sort-btn">Cycles</button></td>
+							<th><button id="dropsSortBtn" class="sort-btn">Dropped</button></td>
+							<th><button id="climbedSortBtn" class="sort-btn">Climbed</button></td>
+							<th><button id="notesSortBtn" class="sort-btn">Notes</button></td>
 						</tr>
 					</thead>
 					<tbody id="recordListBody"></tbody>

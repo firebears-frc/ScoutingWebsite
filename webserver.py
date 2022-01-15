@@ -1,4 +1,6 @@
+#!/usr/local/bin/python3
 import os
+import argparse
 from http.server import BaseHTTPRequestHandler as RequestHandler
 from http.server import HTTPServer
 import json
@@ -77,5 +79,9 @@ class WebHandler(RequestHandler):
 
 
 if __name__ == "__main__":
-	serv = HTTPServer(("0.0.0.0", 8080), WebHandler)
+	par = argparse.ArgumentParser(description="Scouting Website LAN Server")
+	par.add_argument("--port", "-p", type=int, nargs="?", help="port number", default=8080)
+
+	args = par.parse_args()
+	serv = HTTPServer(("0.0.0.0", args.port), WebHandler)
 	serv.serve_forever()

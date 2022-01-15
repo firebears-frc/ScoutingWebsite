@@ -22,7 +22,7 @@ def simp_get(**query):
 	if req == "records":
 		with data.ScoutingData("scouting"+str(team)+".db") as reader:
 			print(query.get("team",['%'])[0])
-			res = reader.get_data(query.get("team",['%'])[0], query.get("comp", ['%'])[0])
+			res = reader.get_data(query.get("team",['%'])[0])
 	elif req == "teams":
 		with data.ScoutingData("scouting"+str(team)+".db") as reader:
 			res = {"teams":reader.get_teamlist()}
@@ -30,6 +30,8 @@ def simp_get(**query):
 		with data.ScoutingData("scouting"+str(team)+".db") as reader:
 			reader.export_as_csv()
 		res = {"message":"success"}
+	elif req == "metadata":
+		res = {"columns":data.SCOUT_TABLE_COLUMNS}
 	else:
 		res = {"error":400, "message":"not valid request"}
 	

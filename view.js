@@ -3,7 +3,6 @@ const isDigit = n => /^\d+$/.test(n)
 
 
 var index = 0;
-var curcomp = 'test';
 var year = 2020;
 
 //var data = [];
@@ -43,20 +42,18 @@ function getTeamList() {
 		if ( xhr.readyState === 4 ) {
 			const data = JSON.parse(xhr.responseText);
 			data["teams"].sort();
-			var tlist = document.getElementById("teamList");
+			var tlist = document.getElementById("teamSelect");
 			while ( tlist.firstChild ) tlist.lastChild.remove();
+			var fel = document.createElement("option");
+			fel.textContent = "";
+			fel.selected = true;
+			fel.disabled = true;
+			tlist.appendChild(fel);
 
 			for ( var i=0; i<data["teams"].length; ++i ) {
 				const teamnum = data["teams"][i];
-				var nel = document.createElement("li");
-				
-				var btn = document.createElement("button");
-				btn.textContent = data["teams"][i];
-				btn.addEventListener("click", function (){
-					requestRecords(teamnum);
-				});
-				
-				nel.appendChild(btn);
+				var nel = document.createElement("option");
+				nel.textContent = data["teams"][i];
 				tlist.appendChild(nel);
 			}
 			
@@ -65,6 +62,10 @@ function getTeamList() {
 	}
 	xhr.open('GET', "/data_api?req=teams", true);
 	xhr.send();
+}
+function teamSelectChange(event) {
+	console.log(event.target.value);
+	requestRecords(event.target.value);
 }
 
 
@@ -93,6 +94,61 @@ function getTeamData(data, team) {
 	
 }
 
+function populateRecordsTable(data) {
+	while ( rlist.firstChild )
+		rlist.lastChild.remove();
+
+	for ( var i=0; i<data.length; ++i ) {
+		var nrow = document.createElement("tr");
+		
+		// Time
+		var timecol = document.createElement("td");
+		var d = new Date(data[i].time*1000);
+		timecol.textContent = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() + ' ' + d.getHours() + ":" + d.getMinutes() + ':' + d.getSeconds();
+		nrow.appendChild(timecol);
+		
+		// Team
+		var col2 = document.createElement("td");
+		col2.textContent = data[i].team;
+		nrow.appendChild(col2);
+		
+		// Cycles
+		var col3 = document.createElement("td");
+		col3.textContent = data[i].cycles;
+		nrow.appendChild(col3);
+		
+		// Dropped
+		var col4 = document.createElement("td");
+		col4.textContent = data[i].drops;
+		nrow.appendChild(col4);
+		
+		var climbcol = document.createElement("td");
+		if ( data[i].climbed == 1 ) {
+			climbcol.textContent = "yes";
+		} else { 
+			climbcol.textContent = "no";
+		}
+		nrow.appendChild(climbcol);
+		
+		// Notes
+		var col5 = document.createElement("td");
+		var tarea = document.createElement("textarea");
+		tarea.readOnly = true;
+		tarea.textContent = data[i].notes;
+		col5.appendChild(tarea)
+		nrow.appendChild(col5);
+	
+		averages.cycles += data[i].cycles;
+		averages.drops += data[i].drops;
+		averages.climbed += data[i].climbed;
+
+		cycles += data[i].cycles;
+		
+		rlist.appendChild(nrow);
+	}
+}
+
+
 
 
 function requestRecords(team) {
@@ -102,61 +158,28 @@ function requestRecords(team) {
 			const sby = document.getElementById("sortBy").value;
 			const rev = document.getElementById("reverseSort").checked;
 			console.log(rev);
+			console.log(xhr.responseText);
 			data = JSON.parse(xhr.responseText);
 			data.sort((fel, lel) => { return sortBy(rev, sby, fel, lel); });
 			var rlist = document.getElementById("recordListBody");
 			var cycles = 0;
-			while ( rlist.firstChild )
-				rlist.lastChild.remove();
 
 			var averages = {};
+			averages.cycles = 0;
+			averages.drops = 0;
+			averages.climbed = 0;
 			
+			populateRecordsTable(data);
 
-
-
-			for ( var i=0; i<data.length; ++i ) {
-				var nrow = document.createElement("tr");
-				
-				// Time
-				var col1 = document.createElement("td");
-				var d = new Date(data[i][0]*1000);
-				col1.textContent = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() + ' ' + d.getHours() + ":" + d.getMinutes() + ':' + d.getSeconds();
-				nrow.appendChild(col1);
-				
-				// Team
-				var col2 = document.createElement("td");
-				col2.textContent = data[i][1];
-				nrow.appendChild(col2);
-				
-				// Cycles
-				var col3 = document.createElement("td");
-				col3.textContent = data[i][3];
-				nrow.appendChild(col3);
-				
-				// Dropped
-				var col4 = document.createElement("td");
-				col4.textContent = data[i][4];
-				nrow.appendChild(col4);
-				
-				var climbcol = document.createElement("td");
-				if ( data[i][5] == 1 ) {
-					climbcol.textContent = "yes";
-				} else { 
-					climbcol.textContent = "no";
-				}
-				nrow.appendChild(climbcol);
-				
-				// Notes
-				var col5 = document.createElement("td");
-				var tarea = document.createElement("textarea");
-				tarea.readOnly = true;
-				tarea.textContent = data[i][6];
-				col5.appendChild(tarea)
-				nrow.appendChild(col5);
-				
-				cycles += data[i][3];
-				
-				rlist.appendChild(nrow);
+			let avgDiv = document.getElementById("averages");
+			while ( avgDiv.firstChild )
+				avgDiv.lastChild.remove();
+			for (const [key, value] of Object.entries(averages)) {
+				console.log(key);
+				console.log(value)
+				let avgEnt = document.createElement("div");
+				avgEnt.textContent = key+": "+(value/data.length);
+				avgDiv.appendChild(avgEnt);
 			}
 			if ( team == '%' ) {
 				document.getElementById("teamOut").innerText = "All Teams";
@@ -233,7 +256,38 @@ function submit(event) {
 	return false;
 }
 
+
+
+
+
+
+
+
+
+
+function sortTable(header) {
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 document.getElementById("dataform").addEventListener("submit", submit);
 document.getElementById("viewForm").addEventListener("submit", getRecords);
+document.getElementById("teamSelect").addEventListener("change", teamSelectChange);
+getTeamList();
+
+document.getElementById("timeSortBtn").addEventListener("click", () => { sortTable("time"); });
+
 
 

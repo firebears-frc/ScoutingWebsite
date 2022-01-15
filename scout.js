@@ -32,14 +32,14 @@ function submit() {
 	var time = new Date();
 	
 	var team = document.getElementById("teamInput").value;
-	var comp = document.getElementById("compInput").value;
+	var match = document.getElementById("matchInput").value;
 	var notes = document.getElementById("notesInput").value;
 	
 	var utcstamp = Math.floor(time.getTime()/1000); // + time.getTimezoneOffset()*60;
 	data = {
 		time:utcstamp,
 		team:team,
-		comp:comp,
+		match:match,
 		cycles:cycles,
 		climbed:climbed+0,
 		drops:drops,
@@ -60,3 +60,31 @@ function submit() {
 	xhr.open('POST', "/data_api", true);
 	xhr.send(JSON.stringify(data));
 }
+
+
+function rungUpdate(event) {
+	if (event.target.value > 0) {
+		document.getElementById("rungRangeLabel").textContent = event.target.value;
+	} else {
+		document.getElementById("rungRangeLabel").textContent = "No Climb";
+	}
+}
+
+
+
+
+function setHub(isUpperHub) {
+	console.log("aaa"+isUpperHub);
+	if (isUpperHub == 1) {
+		document.getElementById("lowerHubBtn").setAttribute("class","toggleBtn btnOff");
+		document.getElementById("upperHubBtn").setAttribute("class", "toggleBtn btnOn");
+	} else {
+		document.getElementById("lowerHubBtn").setAttribute("class","toggleBtn btnOn");
+		document.getElementById("upperHubBtn").setAttribute("class", "toggleBtn btnOff");
+	}
+}
+
+//document.getElementById("rungRange",).addEventListener("input", rungUpdate);
+document.getElementById("lowerHubBtn").addEventListener("click", () => { setHub(0) });
+document.getElementById("upperHubBtn").addEventListener("click", () => { setHub(1) });
+

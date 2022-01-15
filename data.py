@@ -9,12 +9,14 @@ SCOUT_TABLE = "scouting"
 SCOUT_TABLE_COLUMNS = [
 	["time", "INT"],
 	["team", "INT"],
-	["comp", "TEXT"],
+	["match", "INT"],
 	["cycles", "INT"],
 	["drops", "INT"],
-	["climbed", "INT"],
+	["rung", "INT"],
+	["goal", "INT"], # 
 	["notes", "TEXT"],
 ]
+
 
 
 """
@@ -56,11 +58,11 @@ class ScoutingData:
 		self.con.close()		
 	
 
-	def get_data(self, team="%", comp="%"):
+	def get_data(self, team="%"):
 		if team.isdigit():
-			dat = self.cur.execute("SELECT * FROM "+SCOUT_TABLE+" WHERE team = ? AND comp LIKE ?", (team, comp,)).fetchall()
+			dat = self.cur.execute("SELECT * FROM "+SCOUT_TABLE+" WHERE team = ?", (team,)).fetchall()
 		else:
-			dat = self.cur.execute("SELECT * FROM "+SCOUT_TABLE+" WHERE team LIKE ? AND comp LIKE ?", (team, comp,)).fetchall()
+			dat = self.cur.execute("SELECT * FROM "+SCOUT_TABLE+" WHERE team LIKE ?", (team,)).fetchall()
 
 		ret = []
 		for i in dat:
@@ -88,8 +90,8 @@ class ScoutingData:
 
 
 
-def fname(teamnum):
-	return "scouting"+str(teamnum)+".db"
+def fname(teamnum, comp=""):
+	return "Scout"+str(teamnum)+str(comp)+".sqlite3"
 
 
 
