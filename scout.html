@@ -3,22 +3,26 @@
 	<head>
 		<title>Data View</title>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0; maximum-scale=1.0; user-scaleable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<link rel="manifest.json" href="manifest.json" />
 		<script defer src="scout.js"></script>
 		<link rel="stylesheet" type="text/css" href="scout.css" />
-		<link rel="stylesheet" type="text/css" href="theme_normal.css" />
+		<link rel="stylesheet" type="text/css" href="scout_theme0.css" />
 	</head>
 	<body>
 
 			<div class="BtnCol SmallGrid" style="font-size: 4vw">
-				<div style="margin-right: 10px">
-					<label for="teamInput">Team Number</label>
-					<input style="height: 50px; font-size: 40px; width: 4em" id="teamInput" type="number" /><br>
+				<div style="width: 50%;">
+					<div style="margin: 0 auto; width: min-content; text-align: center;">
+						<label for="teamInput">Team</label>
+						<input inputmode="numeric" type="number" style="height: 50px; font-size: 40px; width: 24vw; max-width: 4em" id="teamInput" /><br>
+					</div>
 				</div>
-				<div>
-					<label for="matchInput">Match Number</label>
-					<input style="height: 50px; font-size: 40px; width: 4em" id="matchInput" /><br>
+				<div style="width: 50%;">
+					<div style="margin: 0 auto; width: min-content; text-align: center;">
+						<label for="matchInput">Match</label>
+						<input type="number" inputmode="numeric"  style="height: 50px; font-size: 40px; width: 4em" id="matchInput" /><br>
+					</div>
 				</div>
 			</div><br>
 			<div class="BtnRow">
@@ -35,8 +39,15 @@
 				<!--<button id="climbBtn" class="ScoutBtn" style="background-color: red; grid-column: 1 / 3" onclick="toggleClimb()">Climbed</button>
 				-->
 				<div class="BtnCol">
-					<div class="ScoutLabel FlexLabel BtnRow" style="height: 150px">
-						<div style="width:100%">
+					<div class="BtnRow ScoutLabel FlexLabel" style="height: 20vh; font-size: 7vw">
+						# Balls
+						<div style="width: 100%; height: 100%">
+							<button id="1BallBtn" class="toggleBtn btnOff">1</button>
+							<button id="2BallBtn" class="toggleBtn btnOn">2 ✔</button>
+						</div>
+					</div>
+					<div class="ScoutLabel FlexLabel BtnRow" style="height: 20vh">
+						<div id="fullClimb" style="width:100%">
 							Climbing<br>
 							<input type="radio" id="rung0" name="rungRadio" value="0"><label class="rungLabel" for="rung0">No climb</label>
 							<input type="radio" id="rung1" name="rungRadio" value="1"><label class="rungLabel" for="rung1">Rung 1</label>
@@ -47,12 +58,22 @@
 							<!--<input type="range" id="rungRange" min="0" max="5" style="width: 80%"><br>
 							<span style="font-size: 3vw" id="rungRangeLabel">0<span>-->
 						</div>
+						<div id="mobileClimb" style="width: 80%">
+							Climbing<br>
+							<select id="rungSelect" style="width:100%; height: 50px; font-size: 2vh">
+								<option value=0 selected>No climb</option>
+								<option value=1>Rung 1</option>
+								<option value=2>Rung 2</option>
+								<option value=3>Rung 3</option>
+								<option value=4>Rung 4</option>
+							</select>
+						</div>
 					</div>
-					<div class="BtnRow ScoutLabel FlexLabel" style="height: 150px">
+					<div class="BtnRow ScoutLabel FlexLabel" style="height: 20vh; font-size: 7vw">
 						Hub
 						<div style="width:100%; height:100%;">
-							<button id="upperHubBtn" class="toggleBtn btnOff">Upper</button>
-							<button id="lowerHubBtn" class="toggleBtn btnOn">Lower</button>
+							<button id="upperHubBtn" class="toggleBtn btnOff">High</button>
+							<button id="lowerHubBtn" class="toggleBtn btnOn">Low ✔</button>
 						</div>
 					</div>
 				</div>

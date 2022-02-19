@@ -12,4 +12,10 @@ td,th {
 	border: none;
 }
 
+tbody tr:nth-child(odd) {
+  background-color: #CCC;
+}
 
+tbody tr:nth-child(even) {
+  background-color: #FFF;
+}

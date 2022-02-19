@@ -30,7 +30,8 @@ class WebHandler(RequestHandler):
 			self.send_header(*i)
 		self.end_headers()
 		self.wfile.write(data)
-		
+
+
 
 	def do_GET(self):
 		parsepath = urlparse(self.path)

@@ -95,10 +95,20 @@ function getTeamData(data, team) {
 }
 
 function populateRecordsTable(data) {
+	let rlist = document.getElementById("recordListBody");
+	let averages = {};
+	averages.cycles = 0;
+	averages.drops = 0;
+	averages.rung = 0;
+
+	
+
+
 	while ( rlist.firstChild )
 		rlist.lastChild.remove();
 
 	for ( var i=0; i<data.length; ++i ) {
+		console.log(data[i]);
 		var nrow = document.createElement("tr");
 		
 		// Time
@@ -122,13 +132,10 @@ function populateRecordsTable(data) {
 		col4.textContent = data[i].drops;
 		nrow.appendChild(col4);
 		
-		var climbcol = document.createElement("td");
-		if ( data[i].climbed == 1 ) {
-			climbcol.textContent = "yes";
-		} else { 
-			climbcol.textContent = "no";
-		}
-		nrow.appendChild(climbcol);
+		// Rung
+		var rungcol = document.createElement("td");
+		rungcol.textContent = data[i].rung;
+		nrow.appendChild(rungcol);
 		
 		// Notes
 		var col5 = document.createElement("td");
@@ -140,14 +147,58 @@ function populateRecordsTable(data) {
 	
 		averages.cycles += data[i].cycles;
 		averages.drops += data[i].drops;
-		averages.climbed += data[i].climbed;
+		averages.rung += data[i].rung;
 
-		cycles += data[i].cycles;
 		
 		rlist.appendChild(nrow);
 	}
+	return averages;
 }
 
+
+function graph(data, key) {
+	const xbox = 50;
+	const ybox = 50;
+
+	let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+	svg.setAttribute("width", 100);
+	svg.setAttribute("height", 100);
+	svg.setAttribute("id", key+"Graph");
+	svg.setAttribute("fill", "none");
+	svg.setAttribute("viewBox", "0 0 "+xbox+" "+(ybox+5));
+	svg.setAttribute("stroke", "black");
+
+	let polyline = document.createElementNS("http://www.w3.org/2000/svg", 'polyline');
+	let pts = "";
+	let maxy = 0;
+	let miny = 0;
+	for (let i=0; i<data.length; ++i) {
+		maxy = Math.max(data[i][key], maxy);
+		//miny = Math.min(data[i][key], miny);
+	}
+	--miny;
+	++maxy;
+
+	for (let i=0; i<data.length; ++i) {
+		pts += i/data.length * xbox + ", " + (ybox-(data[i][key]-miny) / (maxy-miny) * ybox) + " ";
+	}
+	polyline.setAttribute("points",	pts);
+
+	svg.appendChild(polyline);
+	
+	let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+	text.setAttribute("style", "font: normal 10px monospace;");
+	text.setAttribute("x", 0);
+	text.setAttribute("y", ybox);
+	text.textContent = key;
+
+	svg.appendChild(text);
+
+	
+	
+
+	return svg;
+}
 
 
 
@@ -164,14 +215,13 @@ function requestRecords(team) {
 			var rlist = document.getElementById("recordListBody");
 			var cycles = 0;
 
-			var averages = {};
-			averages.cycles = 0;
-			averages.drops = 0;
-			averages.climbed = 0;
-			
-			populateRecordsTable(data);
+	
+
+
+			let averages = populateRecordsTable(data);
 
 			let avgDiv = document.getElementById("averages");
+
 			while ( avgDiv.firstChild )
 				avgDiv.lastChild.remove();
 			for (const [key, value] of Object.entries(averages)) {
@@ -181,6 +231,8 @@ function requestRecords(team) {
 				avgEnt.textContent = key+": "+(value/data.length);
 				avgDiv.appendChild(avgEnt);
 			}
+			let svg = graph(data, "cycles");
+			avgDiv.appendChild(svg);
 			if ( team == '%' ) {
 				document.getElementById("teamOut").innerText = "All Teams";
 				document.getElementById("avgCycles").innerText = "Average Cycles N/A";

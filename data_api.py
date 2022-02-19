@@ -3,6 +3,9 @@ from urllib.parse import urlparse, parse_qs
 
 import data
 
+
+TEAM = 2846
+
 def handle_get(args, cookies, environ, start_response):
 	idx = args.get("idx",0)
 	# Auth
@@ -20,14 +23,14 @@ def simp_get(**query):
 	res = {"error":500, "message":"something went wrong"}
 
 	if req == "records":
-		with data.ScoutingData("scouting"+str(team)+".db") as reader:
+		with data.ScoutingData(data.fname(TEAM)) as reader:
 			print(query.get("team",['%'])[0])
 			res = reader.get_data(query.get("team",['%'])[0])
 	elif req == "teams":
-		with data.ScoutingData("scouting"+str(team)+".db") as reader:
+		with data.ScoutingData(data.fname(TEAM)) as reader:
 			res = {"teams":reader.get_teamlist()}
 	elif req == "export":
-		with data.ScoutingData("scouting"+str(team)+".db") as reader:
+		with data.ScoutingData(data.fname(TEAM)) as reader:
 			reader.export_as_csv()
 		res = {"message":"success"}
 	elif req == "metadata":
@@ -44,43 +47,52 @@ def simp_get(**query):
 	head = [("Content-Type", "application/json")]
 	return resp, head, html	
 
+
+
 def simp_post(filedata, **query):
 	args = json.loads(filedata)
-	#args = parse_qs(data.decode("utf-8"))
-	print(args)	
+	if args.get("req") == "patch":
+		pass
+	elif args.get("req") == "delete":
+		pass
+	elif args.get("req") == "append":
+		data = args.get("data")
 
-	all_fields = True
-	clean_args = {}
-	for key, ktype in data.SCOUT_TABLE_COLUMNS:
-		value = args.get(key)
-		if ktype.lower() == "int":
-			try:
-				clean_args[key] = int(value)
-			except ValueError:
-				all_fields = False
-				break
-		elif ktype.lower() == "text":
-			if value.isprintable():
-				clean_args[key] = value
-			else:
-				all_fields = False
-				break
+
+		#args = parse_qs(data.decode("utf-8"))
+		print(args)	
+
+		all_fields = True
+		clean_args = {}
+		for key, ktype in data.SCOUT_TABLE_COLUMNS:
+			value = args.get(key)
+			if ktype.lower() == "int":
+				try:
+					clean_args[key] = int(value)
+				except ValueError:
+					all_fields = False
+					break
+			elif ktype.lower() == "text":
+				if value.isprintable():
+					clean_args[key] = value
+				else:
+					all_fields = False
+					break
+
+		if all_fields:
+			with data.ScoutingData(data.fname(TEAM)) as writer:
+				print(clean_args)
+				writer.add_data(**clean_args)
+		
+			ret = json.dumps({"message":"success"}).encode("utf-8")
+			code = 200
+		else:
+			ret = json.dumps({"message":"missing fields"}).encode("utf-8")
+			code = 400
+		
 	headers = [("Content-Type", "application/json")]
 
-	if all_fields:
-		with data.ScoutingData(data.fname(2846)) as writer:
-			print(clean_args)
-			writer.add_data(**clean_args)
-	
-		ret = json.dumps({"message":"success"}).encode("utf-8")
-		code = 200
-	else:
-		ret = json.dumps({"message":"missing fields"}).encode("utf-8")
-		code = 400
-		
-
 	return code, headers, ret
-
 
 
 

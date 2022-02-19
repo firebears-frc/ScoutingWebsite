@@ -2,7 +2,8 @@ var drops = 0;
 var cycles = 0;
 var team = 0;
 var climbed = false;
-
+var hub = false;
+var ball = false;
 
 function addDrop(x) {
 	drops += x;
@@ -29,23 +30,27 @@ function toggleClimb() {
 
 
 function submit() {
-	var time = new Date();
+	let time = new Date();
 	
-	var team = document.getElementById("teamInput").value;
-	var match = document.getElementById("matchInput").value;
-	var notes = document.getElementById("notesInput").value;
-	
-	var utcstamp = Math.floor(time.getTime()/1000); // + time.getTimezoneOffset()*60;
+	let team = document.getElementById("teamInput").value;
+	let match = document.getElementById("matchInput").value;
+	let notes = document.getElementById("notesInput").value;
+	let rung = document.getElementById("rungSelect").value;
+
+	let utcstamp = Math.floor(time.getTime()/1000); // + time.getTimezoneOffset()*60;
 	data = {
 		time:utcstamp,
 		team:team,
 		match:match,
 		cycles:cycles,
-		climbed:climbed+0,
+		rung:rung,
+		goal:hub,
 		drops:drops,
 		notes:notes
 	};
 	console.log(data);
+	
+
 
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
@@ -74,17 +79,61 @@ function rungUpdate(event) {
 
 
 function setHub(isUpperHub) {
+	hub = !hub;
 	console.log("aaa"+isUpperHub);
 	if (isUpperHub == 1) {
 		document.getElementById("lowerHubBtn").setAttribute("class","toggleBtn btnOff");
 		document.getElementById("upperHubBtn").setAttribute("class", "toggleBtn btnOn");
+
+		document.getElementById("lowerHubBtn").textContent = "Low";
+		document.getElementById("upperHubBtn").textContent = "High ✔";
 	} else {
 		document.getElementById("lowerHubBtn").setAttribute("class","toggleBtn btnOn");
 		document.getElementById("upperHubBtn").setAttribute("class", "toggleBtn btnOff");
+		
+		document.getElementById("lowerHubBtn").textContent = "Low ✔";
+		document.getElementById("upperHubBtn").textContent = "High";
 	}
 }
 
+function setBall(isBall) {
+	ball = !ball;
+	if (isBall == 1) {
+		document.getElementById("1BallBtn").setAttribute("class","toggleBtn btnOff");
+		document.getElementById("2BallBtn").setAttribute("class", "toggleBtn btnOn");
+
+		document.getElementById("1BallBtn").textContent = "1";
+		document.getElementById("2BallBtn").textContent = "2 ✔";
+	} else {
+		document.getElementById("1BallBtn").setAttribute("class","toggleBtn btnOn");
+		document.getElementById("2BallBtn").setAttribute("class", "toggleBtn btnOff");
+		
+		document.getElementById("1BallBtn").textContent = "1 ✔";
+		document.getElementById("2BallBtn").textContent = "2";
+	}
+}
+
+
 //document.getElementById("rungRange",).addEventListener("input", rungUpdate);
-document.getElementById("lowerHubBtn").addEventListener("click", () => { setHub(0) });
-document.getElementById("upperHubBtn").addEventListener("click", () => { setHub(1) });
+document.getElementById("lowerHubBtn").addEventListener("click", () => { setHub(!hub) });
+document.getElementById("upperHubBtn").addEventListener("click", () => { setHub(!hub) });
+
+document.getElementById("1BallBtn").addEventListener("click", () => { setBall(!ball) });
+document.getElementById("2BallBtn").addEventListener("click", () => { setBall(!ball) });
+
+document.addEventListener('touchmove', function (event) {
+  if (event.scale !== 1) { event.preventDefault(); }
+}, { passive: false });
+
+var lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+  var now = (new Date()).getTime();
+  //alert(event.target);
+  if (now - lastTouchEnd <= 300 && event.target.tagName != "BUTTON") {
+    event.preventDefault();
+  }
+  lastTouchEnd = now;
+}, false);
+
+
 

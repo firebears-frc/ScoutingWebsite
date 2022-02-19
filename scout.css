@@ -2,7 +2,22 @@ body {
 	margin: 5px; 
 	height: 100%; 
 	overflow: hidden;
+	position: relative;
 }
+html, body {margin: 0; height: 100%; overflow: hidden}
+* {
+	touch-action: manipulation;
+	user-select: none;
+}
+
+div, button, span, label {
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
 
 .BtnCol {
 	display: flex;
@@ -44,7 +59,7 @@ body {
 
 .ScoutLabel, .ScoutBtn {
 	width: 100%;
-	height: 100px;
+	height: 13vh;
 	/*
 		background-color: #AAAAAA;
 	*/
@@ -69,19 +84,17 @@ body {
 label {
 }
 .btnOn {
-	background-color: green;
-	border: 1px solid #006600;
+	background-color: #098;
+	border: 0px solid #006600;
 }
 .btnOn:active {
-	background-color: #006600;
 }
 
 .btnOff {
-	background-color: red;
+	background-color: #e08b02; /*#950908; /*#BA1200*/;
 	border: none;
 }
 .btnOff:active {
-	background-color: #AA0000;
 }
 
 .toggleBtn {
@@ -91,6 +104,7 @@ label {
 	font-size: 3vh;
 	width: 45%;
 	height: 80%;
+	font-size: 2.7vw;
 }
 .toggleBtn:hover {
 	box-shadow: 1px 1px black;
@@ -100,24 +114,35 @@ input[type=radio] {
 	display: none;
 }
 input[type=radio]:checked + label {
-	color: red;	
+	color: black;
+	/*#BA1200;	*/
 }
 .rungLabel {
-	background-color: orange;
-	border: 1px solid red;
 	padding: 12px;
 	font-size: 2.5vh;
 	display: inline-block;
 }
 
 
-/*@media only screen and (max-width : 320px) {
-	.ScoutBtn {
-		width: 100%;
-	
-	}
+select {
+	background-color: #CED3DC;
+	border: none;
+}
+/*
+#mobileClimb {
+	display: none;
+}
+#fullClimb {
+	display: block;
 }
 */
+#mobileClimb {
+	display: block;
+}
+#fullClimb {
+	display: none;
+}
+
 
 
 

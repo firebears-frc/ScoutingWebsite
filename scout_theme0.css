@@ -1,0 +1,22 @@
+body {
+	background-color: #222;
+	/* #780116; */
+	color: #CED3DC;
+	font: 1em "Fira Sans", sans-serif;
+}
+* {
+	font: 1em "Fira Sans", sans-serif;
+}
+.ScoutLabel, .ScoutBtn {
+	background-color: #780116;
+	/* #c32f27; */
+}
+
+.rungLabel {
+	background-color: #c32f27;
+	border-radius: 10px;
+
+}
+button {
+	color: #CED3DC;
+}

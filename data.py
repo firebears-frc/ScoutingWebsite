@@ -25,7 +25,7 @@ SCOUT_TABLE_COLUMNS = [
 class ScoutingData:
 	def __init__(self, fname, save=True, **kwargs):
 		create_tbl = not os.path.exists(fname)
-		print(create_tbl)
+		print(create_tbl, fname)
 			
 		self.params = kwargs
 		self.con = sql.connect(fname)
