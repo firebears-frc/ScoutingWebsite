@@ -13,7 +13,7 @@
 			<select id="teamSelect"></select>
 			<button onclick="getTeamList()">Refresh Team List</button><br><br>
 
-			<form action="#" method="get" id="viewForm">
+			<form action="#" method="get" id="viewForm" hidden>
 				<label for="teamFilter">Team</label>
 				<input id="teamFilter" /><br>
 				<label for="sortBy">Sort By</label>
@@ -35,11 +35,14 @@
 				<table id="recordList">
 					<thead>
 						<tr>
+							<th><button id="rowidSortBtn" class="sort-btn">Id</button></td>
 							<th><button id="timeSortBtn" class="sort-btn">Time</button></td>
 							<th><button id="teamSortBtn" class="sort-btn">Team</button></td>
-							<th><button id="cyclesSortBtn" class="sort-btn">Cycles</button></td>
+							<th><button id="matchSortBtn" class="sort-btn">Match</button></td>
+							<th><button id="highGoalSortBtn" class="sort-btn">High Goal</button></td>
+							<th><button id="lowGoalSortBtn" class="sort-btn">Low Goal</button></td>
 							<th><button id="dropsSortBtn" class="sort-btn">Dropped</button></td>
-							<th><button id="climbedSortBtn" class="sort-btn">Climbed</button></td>
+							<th><button id="climbedSortBtn" class="sort-btn">Rung</button></td>
 							<th><button id="notesSortBtn" class="sort-btn">Notes</button></td>
 						</tr>
 					</thead>

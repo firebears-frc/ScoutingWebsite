@@ -25,8 +25,16 @@ function exportData() {
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		if ( xhr.readyState === 4 ) {
-			data = JSON.parse(xhr.responseText);
-			console.log(data[0]);
+			//data = JSON.parse(xhr.responseText);
+			//console.log(data);
+			const dataUrl = "data:text/csv;charset=utf-8,"+encodeURIComponent(xhr.responseText);
+			const download = document.createElement("a");
+			download.href = dataUrl
+			const d = new Date();
+			download.download = d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+" ScoutingData.csv";
+			document.body.appendChild(download);
+			download.click();
+			download.remove();
 		}
 	}
 	xhr.open('GET', "/data_api?req=export", true);
@@ -97,7 +105,8 @@ function getTeamData(data, team) {
 function populateRecordsTable(data) {
 	let rlist = document.getElementById("recordListBody");
 	let averages = {};
-	averages.cycles = 0;
+	averages.highgoal = 0;
+	averages.lowgoal = 0;
 	averages.drops = 0;
 	averages.rung = 0;
 
@@ -111,6 +120,12 @@ function populateRecordsTable(data) {
 		console.log(data[i]);
 		var nrow = document.createElement("tr");
 		
+
+		var rowidcol = document.createElement("td");
+		rowidcol.setAttribute("header","rowid");
+		rowidcol.textContent = data[i].rowid;
+		nrow.appendChild(rowidcol);
+		
 		// Time
 		var timecol = document.createElement("td");
 		var d = new Date(data[i].time*1000);
@@ -118,34 +133,131 @@ function populateRecordsTable(data) {
 		nrow.appendChild(timecol);
 		
 		// Team
-		var col2 = document.createElement("td");
-		col2.textContent = data[i].team;
-		nrow.appendChild(col2);
+		var teamcol = document.createElement("td");
+		teamcol.setAttribute("header","team");
+		var teamtarea = document.createElement("input");
+		teamtarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		teamtarea.size = 5;
+		teamtarea.value = data[i].team;
+		teamcol.appendChild(teamtarea);
+		nrow.appendChild(teamcol);
 		
-		// Cycles
-		var col3 = document.createElement("td");
-		col3.textContent = data[i].cycles;
-		nrow.appendChild(col3);
+		var matchcol = document.createElement("td");
+		matchcol.setAttribute("header","match");
+		var matchtarea = document.createElement("input");
+		matchtarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		matchtarea.size = 5;
+		matchtarea.value = data[i].match;
+		matchcol.appendChild(matchtarea);
+		nrow.appendChild(matchcol);
+		
+		var highgoalcol = document.createElement("td");
+		highgoalcol.setAttribute("header","highgoal");
+		var hgoaltarea = document.createElement("input");
+		hgoaltarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		hgoaltarea.size = 5;
+		hgoaltarea.value = data[i].highgoal;
+		highgoalcol.appendChild(hgoaltarea);
+		nrow.appendChild(highgoalcol);
+		
+		var lowgoalcol = document.createElement("td");
+		lowgoalcol.setAttribute("header","lowgoal");
+		var lgoaltarea = document.createElement("input");
+		lgoaltarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		lgoaltarea.size = 5;
+		lgoaltarea.value = data[i].lowgoal;
+		lowgoalcol.appendChild(lgoaltarea);
+		nrow.appendChild(lowgoalcol);
 		
 		// Dropped
-		var col4 = document.createElement("td");
-		col4.textContent = data[i].drops;
-		nrow.appendChild(col4);
+		var dropscol = document.createElement("td");
+		dropscol.setAttribute("header","drops");
+		var dropstarea = document.createElement("input");
+		dropstarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		dropstarea.size = 5;
+		dropstarea.value = data[i].drops;
+		dropscol.appendChild(dropstarea);
+		nrow.appendChild(dropscol);
 		
 		// Rung
 		var rungcol = document.createElement("td");
-		rungcol.textContent = data[i].rung;
+		rungcol.setAttribute("header","rung");
+		var rungtarea = document.createElement("input");
+		rungtarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		rungtarea.size = 5;
+		rungtarea.value = data[i].rung;
+		rungcol.appendChild(rungtarea);
 		nrow.appendChild(rungcol);
 		
 		// Notes
-		var col5 = document.createElement("td");
+		var notescol = document.createElement("td");
+		notescol.setAttribute("header","notes");
 		var tarea = document.createElement("textarea");
-		tarea.readOnly = true;
-		tarea.textContent = data[i].notes;
-		col5.appendChild(tarea)
-		nrow.appendChild(col5);
+		tarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		//tarea.readOnly = true;
+		tarea.value = data[i].notes;
+		notescol.appendChild(tarea)
+		nrow.appendChild(notescol);
+		
+
+		var btncol = document.createElement("td");
+		let applybtn = document.createElement("button");
+		applybtn.setAttribute("id","applybtn");
+		applybtn.hidden = true;
+		applybtn.textContent = "✓";
+		applybtn.onclick = function() {
+			const row = this.parentElement.parentElement;
+			let patchdata = {}
+			for (let i=0; i<row.children.length; ++i) {
+				const header = row.children[i].getAttribute("header");
+				if (header) {
+					let pval;
+					if (header == "notes") {
+						pval = row.children[i].getElementsByTagName("textarea")[0].value;
+					} else if (header == "rowid") {
+						pval = row.children[i].textContent;		
+					} else {
+						pval = row.children[i].getElementsByTagName("input")[0].value;
+					}
+					patchdata[header] = pval;
+				}
+			}
+			/*
+			let patchdata = {
+				rowid:rowidcol.textContent,
+				team:teamtarea.value,
+				match:matchtarea.value,
+				highgoal:hgoaltarea.value,
+				lowgoal:lgoaltarea.value,
+				drops:dropstarea.value,
+				rung:rungtarea.value,
+				notes:tarea.value,
+			}*/
+			console.log("PATCHING");
+			console.log(patchdata);
+			patchRow(patchdata);
+			//console.log(teamtarea.value);
+			this.hidden = true;
+		}
+		btncol.appendChild(applybtn);
+		nrow.appendChild(btncol);
 	
-		averages.cycles += data[i].cycles;
+		averages.highgoal += data[i].highgoal;
+		averages.lowgoal += data[i].lowgoal;
 		averages.drops += data[i].drops;
 		averages.rung += data[i].rung;
 
@@ -157,8 +269,9 @@ function populateRecordsTable(data) {
 
 
 function graph(data, key) {
-	const xbox = 50;
-	const ybox = 50;
+	const xbox = 100;
+	const ybox = 100;
+	const botzone = 10;
 
 	let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 	svg.setAttribute("width", 100);
@@ -180,16 +293,17 @@ function graph(data, key) {
 	++maxy;
 
 	for (let i=0; i<data.length; ++i) {
-		pts += i/data.length * xbox + ", " + (ybox-(data[i][key]-miny) / (maxy-miny) * ybox) + " ";
+		pts += i/data.length * xbox + ", " + (ybox-(data[i][key]-miny) / (maxy-miny) * (ybox-botzone) - botzone) + " ";
 	}
 	polyline.setAttribute("points",	pts);
 
 	svg.appendChild(polyline);
 	
 	let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-	text.setAttribute("style", "font: normal 10px monospace;");
-	text.setAttribute("x", 0);
+	text.setAttribute("style", "font: normal 16px monospace; text-anchor: middle; fill: black");
+	text.setAttribute("x", "50%");
 	text.setAttribute("y", ybox);
+	//text.setAttribute("textLength","100%");
 	text.textContent = key;
 
 	svg.appendChild(text);
@@ -228,11 +342,21 @@ function requestRecords(team) {
 				console.log(key);
 				console.log(value)
 				let avgEnt = document.createElement("div");
-				avgEnt.textContent = key+": "+(value/data.length);
+				avgEnt.textContent = key+": "+(Math.round(value/data.length*10)/10);
 				avgDiv.appendChild(avgEnt);
 			}
-			let svg = graph(data, "cycles");
-			avgDiv.appendChild(svg);
+			let hgsvg = graph(data, "highgoal");
+			avgDiv.appendChild(hgsvg);
+			
+			let lgsvg = graph(data, "lowgoal");
+			avgDiv.appendChild(lgsvg);
+			
+			let dropsvg = graph(data, "drops");
+			avgDiv.appendChild(dropsvg);
+			
+			let rungsvg = graph(data, "rung");
+			avgDiv.appendChild(rungsvg);
+			
 			if ( team == '%' ) {
 				document.getElementById("teamOut").innerText = "All Teams";
 				document.getElementById("avgCycles").innerText = "Average Cycles N/A";
@@ -309,6 +433,21 @@ function submit(event) {
 }
 
 
+function patchRow(data) {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if ( xhr.readyState === 4 ) {
+			console.log(xhr.response);
+		}
+	}
+	data.req = "patch";
+	xhr.open('POST', "/data_api", true);
+	console.log(data);
+	xhr.send(JSON.stringify(data));
+	return false;
+}
+
+
 
 
 
@@ -318,7 +457,22 @@ function submit(event) {
 
 
 function sortTable(header) {
+	const tbl = document.getElementById("recordListBody");
+
+}
+
+
+
+
+
+
+
+
+
+function sortTable(header) {
+	const tbl = document.getElementById("recordListBody");
 	
+
 	
 }
 

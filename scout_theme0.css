@@ -1,22 +1,30 @@
 body {
-	background-color: #222;
+	background-color: #03071E/*#222*/;
 	/* #780116; */
 	color: #CED3DC;
-	font: 1em "Fira Sans", sans-serif;
-}
-* {
-	font: 1em "Fira Sans", sans-serif;
-}
-.ScoutLabel, .ScoutBtn {
-	background-color: #780116;
-	/* #c32f27; */
+	font: normal 1em "Fira Sans", sans-serif;
 }
 
+* {
+	font: normal 1em "Fira Sans", sans-serif;
+}
+
+.ScoutLabel, .ScoutBtn {
+	background-color: #A50C00; /*#780116*/
+	/* #c32f27; */
+	font-weight: bold;
+}
+.ScoutBtn {
+	background-color: #BA1100; /*#780116*/
+	font-weight: normal;
+	
+}
 .rungLabel {
 	background-color: #c32f27;
 	border-radius: 10px;
 
 }
+
 button {
 	color: #CED3DC;
 }

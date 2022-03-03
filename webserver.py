@@ -25,6 +25,10 @@ class WebHandler(RequestHandler):
 			if hdl:
 				code, headers, data = hdl.simp_post(filedata,**args)
 		
+
+		print(data)
+
+
 		self.send_response(code)
 		for i in headers:
 			self.send_header(*i)
@@ -50,12 +54,16 @@ class WebHandler(RequestHandler):
 
 		hdl = None
 		code = 200
-		if path == '/' or path.rstrip(".py") == "/view":
+		if path.rstrip(".py") == "/view":
 			import view_page as hdl
-		elif path.rstrip(".py") == "/scout":
+		elif path == '/' or path.rstrip(".py") == "/scout":
 			import scout_page as hdl
 		elif path.rstrip(".py") == "/data_api":
-			import data_api as hdl	
+			import data_api as hdl
+		elif os.path.basename(path).endswith(".html"):
+			headers = [("Content-Type", "text/html")]
+			with open(os.path.basename(path),'rb') as f:
+				data = f.read()
 		elif os.path.basename(path).endswith(".js"):
 			headers = [("Content-Type", "application/javascript")]
 			with open(os.path.basename(path),'rb') as f:

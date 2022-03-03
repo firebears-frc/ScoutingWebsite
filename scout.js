@@ -1,9 +1,16 @@
 var drops = 0;
-var cycles = 0;
+let highgoal = 0;
+let lowgoal = 0;
+let autohighgoal = 0;
+let autolowgoal = 0;
+let crossedline = 0;
+
 var team = 0;
+
 var climbed = false;
 var hub = false;
 var ball = false;
+
 
 function addDrop(x) {
 	drops += x;
@@ -11,11 +18,32 @@ function addDrop(x) {
 	var lab = document.getElementById("dropLabel");
 	lab.textContent = drops;
 }
-function addCycle(x) {
-	cycles += x;
-	if ( cycles < 0) cycles = 0;
-	var lab = document.getElementById("cycleLabel");
-	lab.textContent = cycles;
+function addHigh(x) {
+	highgoal += x;
+	if ( highgoal < 0) highgoal = 0;
+	var lab = document.getElementById("highgoalLabel");
+	lab.textContent = highgoal;
+}
+
+function addLow(x) {
+	lowgoal += x;
+	if ( lowgoal < 0) lowgoal = 0;
+	var lab = document.getElementById("lowgoalLabel");
+	lab.textContent = lowgoal;
+}
+
+function addAutoHigh(x) {
+	autohighgoal += x;
+	if ( autohighgoal < 0) autohighgoal = 0;
+	var lab = document.getElementById("hgautoLabel");
+	lab.textContent = autohighgoal;
+}
+
+function addAutoLow(x) {
+	autolowgoal += x;
+	if ( autolowgoal < 0) autolowgoal = 0;
+	var lab = document.getElementById("lgautoLabel");
+	lab.textContent = autolowgoal;
 }
 
 function toggleClimb() {
@@ -39,14 +67,19 @@ function submit() {
 
 	let utcstamp = Math.floor(time.getTime()/1000); // + time.getTimezoneOffset()*60;
 	data = {
+		req:"append",
 		time:utcstamp,
 		team:team,
 		match:match,
-		cycles:cycles,
+		highgoal:highgoal,
+		lowgoal:lowgoal,
+		autohighgoal:autohighgoal,
+		autolowgoal:autolowgoal,
+		crossedline:crossedline,
 		rung:rung,
 		goal:hub,
 		drops:drops,
-		notes:notes
+		notes:notes,
 	};
 	console.log(data);
 	
@@ -57,7 +90,8 @@ function submit() {
 		if ( xhr.readyState === 4 ) {
 			console.log(xhr.response);
 			addDrop(-drops);
-			addCycle(-cycles);
+			addHigh(-highgoal);
+			addLow(-lowgoal);
 			if ( climbed ) toggleClimb();
 			document.getElementById("notesInput").value = "";
 		}
@@ -111,6 +145,18 @@ function setBall(isBall) {
 		document.getElementById("1BallBtn").textContent = "1 ✔";
 		document.getElementById("2BallBtn").textContent = "2";
 	}
+	console.log(ball);
+}
+
+function setAutoLine(newline) {
+	crossedline = newline;
+	if (crossedline == 1) {
+		document.getElementById("AutoLineBtn").setAttribute("class","toggleBtn btnOn");
+		document.getElementById("AutoLineBtn").textContent = "Yes";
+	} else {
+		document.getElementById("AutoLineBtn").setAttribute("class","toggleBtn btnOff");
+		document.getElementById("AutoLineBtn").textContent = "No";
+	}
 }
 
 
@@ -121,6 +167,8 @@ document.getElementById("upperHubBtn").addEventListener("click", () => { setHub(
 document.getElementById("1BallBtn").addEventListener("click", () => { setBall(!ball) });
 document.getElementById("2BallBtn").addEventListener("click", () => { setBall(!ball) });
 
+document.getElementById("AutoLineBtn").addEventListener("click", () => { setAutoLine(!crossedline) });
+setBall(!ball);
 document.addEventListener('touchmove', function (event) {
   if (event.scale !== 1) { event.preventDefault(); }
 }, { passive: false });

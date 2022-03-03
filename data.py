@@ -9,11 +9,22 @@ SCOUT_TABLE = "scouting"
 SCOUT_TABLE_COLUMNS = [
 	["time", "INT"],
 	["team", "INT"],
-	["match", "INT"],
-	["cycles", "INT"],
+	["match", "TEXT"],
+	#["cycles", "INT"],
+	
+	["highgoal", "INT"],
+	["lowgoal", "INT"],
+	
+	["autohighgoal", "INT"],
+	["autolowgoal", "INT"],
+	
+	["crossedline", "INT"],
+	
 	["drops", "INT"],
 	["rung", "INT"],
-	["goal", "INT"], # 
+	
+	["goal", "INT"], 
+
 	["notes", "TEXT"],
 ]
 
@@ -44,12 +55,15 @@ class ScoutingData:
 		self.cleanup(self.save)
 
 	def export_as_csv(self, outfname="output.csv"):
-		data = self.cur.execute("SELECT * FROM scouting")
-		with open(outfname, 'w', newline='') as fp:
-			writer = csv.writer(fp, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-			writer.writerow([x[0] for x in SCOUT_TABLE_COLUMNS])
-			for i in data:
-				writer.writerow(i)
+		data = self.cur.execute("SELECT rowid, * FROM "+SCOUT_TABLE)
+		output = io.StringIO()
+
+		#with open(outfname, 'w', newline='') as fp:
+		writer = csv.writer(output, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+		writer.writerow([x[0] for x in [("id","INT")]+SCOUT_TABLE_COLUMNS])
+		for i in data:
+			writer.writerow(i)
+		return output.getvalue()
 
 	def cleanup(self, save=None):
 		if save or (save is None and self.save):
@@ -60,14 +74,15 @@ class ScoutingData:
 
 	def get_data(self, team="%"):
 		if team.isdigit():
-			dat = self.cur.execute("SELECT * FROM "+SCOUT_TABLE+" WHERE team = ?", (team,)).fetchall()
+			dat = self.cur.execute("SELECT rowid, * FROM "+SCOUT_TABLE+" WHERE team = ?", (team,)).fetchall()
 		else:
-			dat = self.cur.execute("SELECT * FROM "+SCOUT_TABLE+" WHERE team LIKE ?", (team,)).fetchall()
+			dat = self.cur.execute("SELECT rowid, * FROM "+SCOUT_TABLE+" WHERE team LIKE ?", (team,)).fetchall()
 
 		ret = []
 		for i in dat:
 			row = {}
-			for x,y  in zip(SCOUT_TABLE_COLUMNS,i):
+			row["rowid"] = i[0]
+			for x,y  in zip(SCOUT_TABLE_COLUMNS,i[1:]):
 				row[x[0]] = y
 			ret.append(row)
 		return ret
@@ -86,6 +101,18 @@ class ScoutingData:
 		self.cur.execute(
 			"INSERT INTO "+SCOUT_TABLE+" VALUES ("+("?, "*len(SCOUT_TABLE_COLUMNS))[:-2]+")", 
 			tuple([str(kwargs.get(x[0])) for x in SCOUT_TABLE_COLUMNS]), #*tuple([str(kwargs.get(x[0] for x in SCOUT_TABLE_COLUMNS))])
+		)
+
+	def patch_data(self, rowid, **data):
+		collist = ""
+		colset = []
+		for key,_ in SCOUT_TABLE_COLUMNS:
+			if data.get(key):
+				collist += key+" = ?, "
+				colset.append(key)
+		self.cur.execute(
+			"UPDATE "+SCOUT_TABLE+" SET " + collist[:-2] + "WHERE rowid = ?", 
+			tuple([str(data.get(x)) for x in colset]) + (rowid,)
 		)
 
 
