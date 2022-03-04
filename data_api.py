@@ -55,7 +55,8 @@ def simp_get(**query):
 def simp_post(filedata, **query):
 	code = 500
 	ret = json.dumps({"error":"server"}).encode("utf-8")
-	args = json.loads(filedata)
+	print(filedata.decode("utf-8"))
+	args = json.loads(filedata.decode("utf-8"))
 	print(args)
 	if args.get("req") == "patch":
 		print("PATCH")
