@@ -88,12 +88,20 @@ function submit() {
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		if ( xhr.readyState === 4 ) {
+			console.log(xhr.status);
 			console.log(xhr.response);
-			addDrop(-drops);
-			addHigh(-highgoal);
-			addLow(-lowgoal);
-			if ( climbed ) toggleClimb();
-			document.getElementById("notesInput").value = "";
+			if (xhr.status == 200) {
+				addDrop(-drops);
+				addHigh(-highgoal);
+				addLow(-lowgoal);
+				addAutoHigh(-autohighgoal);
+				addAutoLow(-autolowgoal);
+				document.getElementById("teamInput").value = "";
+				document.getElementById("matchInput").value = "";
+				document.getElementById("rungSelect").value = 0;
+				document.getElementById("notesInput").value = "";
+				setAutoLine(false);
+			}
 		}
 	}
 	xhr.open('POST', "/data_api", true);

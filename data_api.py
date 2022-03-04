@@ -68,12 +68,14 @@ def simp_post(filedata, **query):
 			for key, ktype in data.SCOUT_TABLE_COLUMNS:
 				value = args.get(key)
 				if value is None:
+					print(key,ktype)
 					continue
 				print(ktype,key,value)
 				if ktype.lower() == "int":
 					try:
 						clean_args[key] = int(value)
 					except ValueError:
+						print("VALUE ERROR", value)
 						all_fields = False
 						break
 				elif ktype.lower() == "text":
@@ -85,7 +87,7 @@ def simp_post(filedata, **query):
 		else:
 			all_fields = False
 			
-		print(clean_args)
+		print("CC",clean_args)
 		if all_fields:
 			with data.ScoutingData(data.fname(TEAM)) as writer:
 				writer.patch_data(**clean_args)

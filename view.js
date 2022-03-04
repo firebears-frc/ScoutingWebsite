@@ -176,7 +176,47 @@ function populateRecordsTable(data) {
 		lgoaltarea.value = data[i].lowgoal;
 		lowgoalcol.appendChild(lgoaltarea);
 		nrow.appendChild(lowgoalcol);
+
+
+		var highautocol = document.createElement("td");
+		highautocol.setAttribute("header","autohighgoal");
+		var hautotarea = document.createElement("input");
+		hautotarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		hautotarea.size = 5;
+		hautotarea.value = data[i].autohighgoal;
+		highautocol.appendChild(hautotarea);
+		nrow.appendChild(highautocol);
 		
+		var lowautocol = document.createElement("td");
+		lowautocol.setAttribute("header","autolowgoal");
+		var lautotarea = document.createElement("input");
+		lautotarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		lautotarea.size = 5;
+		lautotarea.value = data[i].autolowgoal;
+		lowautocol.appendChild(lautotarea);
+		nrow.appendChild(lowautocol);
+
+
+
+		var crossedlinecol = document.createElement("td");
+		crossedlinecol.setAttribute("header","crossedline");
+		var crossedlinetarea = document.createElement("input");
+		crossedlinetarea.addEventListener("input", function() {
+			this.parentElement.parentElement.getElementsByTagName("button")[0].hidden = false;
+		});
+		crossedlinetarea.size = 5;
+		crossedlinetarea.value = data[i].crossedline == 1;
+		crossedlinecol.appendChild(crossedlinetarea);
+		nrow.appendChild(crossedlinecol);
+
+
+
+
+
 		// Dropped
 		var dropscol = document.createElement("td");
 		dropscol.setAttribute("header","drops");
@@ -230,6 +270,13 @@ function populateRecordsTable(data) {
 						pval = row.children[i].getElementsByTagName("textarea")[0].value;
 					} else if (header == "rowid") {
 						pval = row.children[i].textContent;		
+					} else if (header == "crossedline") {
+						pval = row.children[i].getElementsByTagName("input")[0].value;
+						if (pval.toLowerCase() == "true" || pval > 0) {
+							pval = 1;
+						} else {
+							pval = 0;
+						}
 					} else {
 						pval = row.children[i].getElementsByTagName("input")[0].value;
 					}

@@ -106,10 +106,14 @@ class ScoutingData:
 	def patch_data(self, rowid, **data):
 		collist = ""
 		colset = []
+		print("PP DATA",data)
 		for key,_ in SCOUT_TABLE_COLUMNS:
-			if data.get(key):
+			if data.get(key) is not None:
 				collist += key+" = ?, "
 				colset.append(key)
+			else:
+				print(data,key)
+		print("RUNNING",collist)
 		self.cur.execute(
 			"UPDATE "+SCOUT_TABLE+" SET " + collist[:-2] + "WHERE rowid = ?", 
 			tuple([str(data.get(x)) for x in colset]) + (rowid,)
