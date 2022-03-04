@@ -7,7 +7,5 @@ Run `python3 webserver.py -h`
 
 
 # Credit
-## Main Programing / Networking
-Kieran Musser
-## Visuals / Others
-Sadiq Ahmed
+## Programmers
+Kieran Musser , Sadiq Ahmed
