@@ -8,4 +8,4 @@ Run `python3 webserver.py -h`
 
 # Credit
 ## Programmers
-Kieran Musser , Sadiq Ahmed
+Kieran Musser , Sadiq Ahmed , Theo Albando
