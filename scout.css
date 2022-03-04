@@ -16,6 +16,10 @@ html, body {margin: 0; height: 100%; overflow: hidden}
 	user-select: none;
 }
 
+*::-webkit-scrollbar{
+	display: none;
+}
+
 div, button, span, label {
    -moz-user-select: -moz-none;
    -khtml-user-select: none;
@@ -182,6 +186,9 @@ select {
 	margin-left: 15px;
 }
 
-
-
-
+#credit{
+	text-align: left;
+	font-size: 0.75em;
+	font-family: monospace;
+	font-weight: bold;
+}

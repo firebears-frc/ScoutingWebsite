@@ -1,5 +1,8 @@
 #!/usr/local/bin/python3
 import os
+import threading
+import consolecommands
+from datetime import date,datetime
 import socket
 import argparse
 from http.server import BaseHTTPRequestHandler as RequestHandler
@@ -27,7 +30,7 @@ class WebHandler(RequestHandler):
 				code, headers, data = hdl.simp_post(filedata,**args)
 		
 
-		print(data)
+		##tprint(data)
 
 
 		self.send_response(code)
@@ -85,13 +88,35 @@ class WebHandler(RequestHandler):
 		self.end_headers()
 		self.wfile.write(data)
 
+def tprint(txt):
+	print("[" + datetime.now().strftime("%H:%M:%S") + "] " + txt)
 
 def onServerStart(port):
 	print("=================================")
-	print("         Starting Server         ")
+	print("Started Server - " + date.today().strftime("%m/%d/%y") + " @ " + datetime.now().strftime("%H:%M:%S"))
 	print("=================================")
 	print("Server @ " + socket.gethostbyname(socket.gethostname()) + ":" + str(port))
 	print("=================================")
+
+cmds = {
+	"clear" : consolecommands.clear,
+	"ver" : consolecommands.ver,
+	"showdata" : consolecommands.printData,
+	"help" : consolecommands.printHelp,
+}
+
+doCmdThread = None
+def doCommand():
+	## console commands
+	while True:
+		cmd = input().lower()
+		try:
+			cmds[cmd]()
+		except:
+			tprint("error, not a valid command")
+			pass
+		
+
 
 
 if __name__ == "__main__":
@@ -99,5 +124,10 @@ if __name__ == "__main__":
 	par.add_argument("--port", "-p", type=int, nargs="?", help="port number", default=8080)
 	args = par.parse_args()
 	onServerStart(args.port)
+
+	doCmdThread = threading.Thread(target=doCommand, args=())
+	doCmdThread.daemon = True
+	doCmdThread.start()
+
 	serv = HTTPServer(("0.0.0.0", args.port), WebHandler)
 	serv.serve_forever()

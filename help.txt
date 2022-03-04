@@ -1,0 +1,9 @@
+=================================
+----> Commands:
+    help: prints the help window and all Commands
+
+    clear: clears the terminal
+
+    version: prints the version of the scouting website to the terminal
+
+    showdata: prints out all the data collected from the scouting website to the terminal
