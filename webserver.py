@@ -1,5 +1,6 @@
 #!/usr/local/bin/python3
 import os
+import socket
 import argparse
 from http.server import BaseHTTPRequestHandler as RequestHandler
 from http.server import HTTPServer
@@ -85,12 +86,18 @@ class WebHandler(RequestHandler):
 		self.wfile.write(data)
 
 
+def onServerStart(port):
+	print("=================================")
+	print("         Starting Server         ")
+	print("=================================")
+	print("Server @ " + socket.gethostbyname(socket.gethostname()) + ":" + str(port))
+	print("=================================")
 
 
 if __name__ == "__main__":
 	par = argparse.ArgumentParser(description="Scouting Website LAN Server")
 	par.add_argument("--port", "-p", type=int, nargs="?", help="port number", default=8080)
-
 	args = par.parse_args()
+	onServerStart(args.port)
 	serv = HTTPServer(("0.0.0.0", args.port), WebHandler)
 	serv.serve_forever()
