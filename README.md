@@ -6,8 +6,8 @@ Connect to host on port 8080
 Run `python3 webserver.py -h`
 
 
-#Credit
-##Main Programing / Networking
+# Credit
+## Main Programing / Networking
 Kieran Musser
-##Visuals / Others
+## Visuals / Others
 Sadiq Ahmed
