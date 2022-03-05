@@ -19,3 +19,24 @@ tbody tr:nth-child(odd) {
 tbody tr:nth-child(even) {
   background-color: #FFF;
 }
+
+#hof-t{
+	width: 100% !important;
+	height: 42px !important;
+	float: top center !important;
+	font-family: 'Aclonica';font-size: 22px;
+	text-align: center;
+	font-size: 1.75em;
+	margin-top: 15px;
+	margin-bottom: 3px;
+}
+
+.hof{
+	width: 90%;
+	height: 64px;
+	float: top center;
+	background-color: grey;
+	color: white;
+	margin-top: 2.5px;
+	margin-bottom: 2.5px;
+}
