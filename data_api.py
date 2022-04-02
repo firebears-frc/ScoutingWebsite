@@ -1,6 +1,6 @@
 import json
 from urllib.parse import urlparse, parse_qs
-
+import time
 import data
 
 
@@ -36,10 +36,14 @@ def simp_get(**query):
 		#res = {"message":"success"}
 	elif req == "metadata":
 		res = {"columns":data.SCOUT_TABLE_COLUMNS}
+	elif req == "match":
+		api = data.get_api()
+		mn = query.get("match")
+		if type(mn) is list:
+			mn = mn[0]
+		res = api.get_match(mn) or {"error":500, "message":"api failed"}
 	else:
 		res = {"error":400, "message":"not valid request"}
-	
-	
 
 	
 	if ctype == "application/json":

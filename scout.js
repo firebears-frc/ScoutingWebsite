@@ -167,18 +167,28 @@ function setAutoLine(newline) {
 	}
 }
 
+let timerStart = 0;
+document.getElementById("timerBtn").addEventListener("click", function() {
+	let counting = !(this.getAttribute("counting")=="false");
+	if (counting) {
+		
+	} else {
+		
+	}
+	this.setAttribute("counting", !counting);
+});
 
+document.getElementById("timerBtn").setAttribute("counting","false");
 //document.getElementById("rungRange",).addEventListener("input", rungUpdate);
-document.getElementById("lowerHubBtn").addEventListener("click", () => { setHub(!hub) });
-document.getElementById("upperHubBtn").addEventListener("click", () => { setHub(!hub) });
+//document.getElementById("lowerHubBtn").addEventListener("click", () => { setHub(!hub) });
+//document.getElementById("upperHubBtn").addEventListener("click", () => { setHub(!hub) });
 
-document.getElementById("1BallBtn").addEventListener("click", () => { setBall(!ball) });
-document.getElementById("2BallBtn").addEventListener("click", () => { setBall(!ball) });
+//document.getElementById("1BallBtn").addEventListener("click", () => { setBall(!ball) });
+//document.getElementById("2BallBtn").addEventListener("click", () => { setBall(!ball) });
 
 document.getElementById("AutoLineBtn").addEventListener("click", () => { setAutoLine(!crossedline) });
-setBall(!ball);
 document.addEventListener('touchmove', function (event) {
-  if (event.scale !== 1) { event.preventDefault(); }
+  //if (event.scale !== 1) { event.preventDefault(); }
 }, { passive: false });
 
 var lastTouchEnd = 0;
@@ -186,7 +196,7 @@ document.addEventListener('touchend', function (event) {
   var now = (new Date()).getTime();
   //alert(event.target);
   if (now - lastTouchEnd <= 300 && event.target.tagName != "BUTTON") {
-    event.preventDefault();
+    //event.preventDefault();
   }
   lastTouchEnd = now;
 }, false);

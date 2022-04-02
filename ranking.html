@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<title>Data View</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!--<link rel="manifest.json" href="manifest.json" />-->
+		<script defer src="ranking.js"></script>
+		<link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>
+		<link rel="stylesheet" type="text/css" href="view.css" />
+		<link rel="stylesheet" type="text/css" href="ranking.css" />
+	</head>
+	<body>
+		<div>
+			<div id="dataView">
+				<b><span id="teamOut"></span><br></b>
+				<span id="avgCycles" hidden></span>
+				<div id="averages"></div>
+				<div id="matchView">
+					<div class="no-print">
+						Match Number <input id="matchInput"/><button onclick="loadTeamNumbers(matchInput.value)">Load Teams</button><br>
+						
+						Red<br>
+						<input id="redTeam0" /><br>
+						<input id="redTeam1" /><br>
+						<input id="redTeam2" /><br>
+						
+						Blue<br>
+						<input id="blueTeam0" /><br>
+						<input id="blueTeam1" /><br>
+						<input id="blueTeam2" /><br>
+
+						<button id="loadMatchBtn" onclick="loadTeamData()">Compare Teams</button>
+					</div>
+					<div id="teamViews" class="contain no-print">
+						<div id="redTeamViews" class="cell"></div>
+						<hr>
+						<div id="blueTeamViews" class="cell"></div>
+					</div>
+
+				</div>
+				<button class="no-print" onclick="reloadTable()">Show all teams</button>
+				<table class="no-print" id="recordList">
+					<thead>
+						<tr>
+							<th><button id="rowidSortBtn" class="sort-btn">Id</button></td>
+							<th><button id="timeSortBtn" class="sort-btn">Time</button></td>
+							<th><button id="teamSortBtn" class="sort-btn">Team</button></td>
+							<th><button id="matchSortBtn" class="sort-btn">Match</button></td>
+							<th><button id="highGoalSortBtn" class="sort-btn">High Goal</button></td>
+							<th><button id="lowGoalSortBtn" class="sort-btn">Low Goal</button></td>
+							<th><button id="highAutoSortBtn" class="sort-btn">High Goal (Auto)</button></td>
+							<th><button id="lowAutoSortBtn" class="sort-btn">Low Goal (Auto)</button></td>
+							<th><button id="crossedLineSortBtn" class="sort-btn">Crossed Line</button></td>
+							<th><button id="dropsSortBtn" class="sort-btn">Dropped</button></td>
+							<th><button id="climbedSortBtn" class="sort-btn">Rung</button></td>
+							<th><button id="notesSortBtn" class="sort-btn">Notes</button></td>
+						</tr>
+					</thead>
+					<tbody id="recordListBody"></tbody>
+				</table>
+			</div>
+		</div>
+		<br>
+		<br><br>
+		<a class="no-print" href="/scout">Scout</a>
+		<!-- Credits -->
+		<div id = "contacts"><span id="credit">© 2022 Team 2846 Firebears</span></div>
+	</body>

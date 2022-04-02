@@ -3,30 +3,14 @@ const isDigit = n => /^\d+$/.test(n)
 
 
 var index = 0;
-var year = 2020;
-
+var year = 2022;
+let halloffame = [];
 //var data = [];
-
-function get(team) {
-	var xhr = new XMLHttpRequest();
-	xhr.onreadystatechange = function() {
-		if ( xhr.readyState === 4 ) {
-			data = JSON.parse(xhr.responseText);
-			console.log(data[0]);
-
-			//console.log(xhr.response);
-		}
-	}
-	xhr.open('GET', "/data_api?team="+team, true);
-	xhr.send();
-}
 
 function exportData() {
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		if ( xhr.readyState === 4 ) {
-			//data = JSON.parse(xhr.responseText);
-			//console.log(data);
 			const dataUrl = "data:text/csv;charset=utf-8,"+encodeURIComponent(xhr.responseText);
 			const download = document.createElement("a");
 			download.href = dataUrl
@@ -53,9 +37,8 @@ function getTeamList() {
 			var tlist = document.getElementById("teamSelect");
 			while ( tlist.firstChild ) tlist.lastChild.remove();
 			var fel = document.createElement("option");
-			fel.textContent = "";
+			fel.textContent = "All";
 			fel.selected = true;
-			fel.disabled = true;
 			tlist.appendChild(fel);
 
 			for ( var i=0; i<data["teams"].length; ++i ) {
@@ -64,16 +47,24 @@ function getTeamList() {
 				nel.textContent = data["teams"][i];
 				tlist.appendChild(nel);
 			}
-			
 			console.log(data);
 		}
 	}
 	xhr.open('GET', "/data_api?req=teams", true);
 	xhr.send();
+	if (document.getElementById("teamSelect").value.toLowerCase() == "all") {
+		requestRecords("%");
+	} else {
+		requestRecords(document.getElementById("teamSelect").value);
+	}
 }
 function teamSelectChange(event) {
 	console.log(event.target.value);
-	requestRecords(event.target.value);
+	if (event.target.value.toLowerCase() == "all") {
+		requestRecords("%");
+	} else {
+		requestRecords(event.target.value);
+	}
 }
 
 
@@ -495,9 +486,91 @@ function patchRow(data) {
 }
 
 
+function renderHallOfFame(newhof) {
+	halloffame = newhof;
+	let topTeams = {};
+	for (let i=0; i<halloffame.length; ++i) {
+		for (key in halloffame[i]) {
+			if (halloffame[i].hasOwnProperty(key)) {
+				if (topTeams[key] == undefined || topTeams[key]["value"] < halloffame[i][key][0]) {
+					topTeams[key] = {team:halloffame[i]["team"], value:halloffame[i][key]};
+				}
+			}
+		}
+	}
+	console.log(topTeams);
+
+}
 
 
 
+function reloadHallOfFame() {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if ( xhr.readyState === 4 ) {
+			data = JSON.parse(xhr.responseText);
+			console.log(data);
+			let sums = {};
+			let teamsums = {};
+			for (let i=0; i<data.length; ++i) {
+				for(var key in data[i]) {
+					if(data[i].hasOwnProperty(key)) { //to be safe
+						if (key != "time" && key != "notes" && key != "match" && key != "team") {
+							if (sums[key]) {
+								sums[key] += data[i][key];
+							} else {
+								sums[key] = data[i][key];
+							}
+							console.log("DATA");
+							console.log(data[i])
+							if (teamsums[data[i]["team"]] == undefined)
+								teamsums[data[i]["team"]] = {num:0};
+							
+							if (teamsums[data[i]["team"]][key]) {
+								teamsums[data[i]["team"]][key] += data[i][key];
+							} else {
+								teamsums[data[i]["team"]][key] = data[i][key];
+							}
+						}
+					}
+				}
+				teamsums[data[i]["team"]].num++;
+			}
+			let sdsums = {};
+			let tlist = [];
+			for(var team in teamsums) {
+				let ret = {team:team};
+				for (var key in teamsums[team]) {
+					if (key != "num") {
+						if (sdsums[key]) {
+							sdsums[key] += Math.abs(teamsums[team][key]/teamsums[team]["num"] - sums[key]/data.length);
+						} else {
+							sdsums[key] = Math.abs(teamsums[team][key]/teamsums[team]["num"] - sums[key]/data.length);
+						}
+						ret[key] = [
+							(teamsums[team][key]/teamsums[team]["num"] - sums[key]/data.length) / sums[key]/data.length * 100,
+							teamsums[team][key]/teamsums[team]["num"]
+						];
+					}
+				}
+				tlist.push(ret);
+			}
+			renderHallOfFame(tlist);
+
+			for (var key in sdsums) {
+				break;
+				sdsums[key] = sdsums[key]/Object.keys(teamsums).length;
+			}
+			console.log(sums);
+			console.log(teamsums);
+			console.log(sdsums);
+		}
+	}
+	xhr.open('GET', "/data_api?req=records&team=%", true);
+	xhr.send();
+	
+
+}
 
 
 

@@ -192,3 +192,8 @@ select {
 	font-family: monospace;
 	font-weight: bold;
 }
+#timerBtn {
+	padding: 5px;
+	margin: 5px;
+	height: auto;
+}

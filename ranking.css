@@ -1,0 +1,17 @@
+.cell {
+	padding: 5px;
+	margin: 0;
+	overflow: scroll;
+}
+#redTeamViews tbody tr:nth-child(odd) {
+	background-color: #FCC;
+}
+
+#blueTeamViews tbody tr:nth-child(odd) {
+	background-color: #CCF;
+}
+@media print {
+	.no-print {
+		display: none;
+	}
+}
